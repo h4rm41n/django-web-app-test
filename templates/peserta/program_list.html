@@ -1,0 +1,25 @@
+{% extends "layout/index.html" %}
+
+{% block container %}
+    <h3>Data Program</h3>
+    <a style="float: right;" href="{% url 'new-program' %}" class="btn btn-success btn-sm">Tambah Data</a><br /><br />
+    <table class="table table-hover table-striped table-bordered">
+        <tr>
+            <th width="5%">No.</th>
+            <th width="5%">Proses</th>
+            <th width="20%">Nama</th>
+            <th width="20%">Biaya</th>
+        </tr>
+        {% for data in object_list %}
+            <tr>
+                <td>{{forloop.counter}}.</td>
+                <td>
+                    <a href="{% url 'edit-program' data.id %}" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="{% url 'delete-program' id=data.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Hapus Data?')">Delete</a>
+                </td>
+                <td>{{data.nama_program}}</td>
+                <td>{{data.biaya}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock container %}
