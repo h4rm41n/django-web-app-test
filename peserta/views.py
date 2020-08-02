@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
-from .forms import FormPeserta, FormBiasa, ProgramForm
-from .models import Peserta, Program
+from .forms import FormPeserta, ProgramForm
+from .models import Peserta, Program, Pendaftaran
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.views import generic, View
+from django.contrib.auth.models import User
+from core.lib import useracak
 
 
 class Dashboard(generic.TemplateView):
@@ -52,54 +54,50 @@ class DeleteProgram(View):
         return redirect('list-program')
 
 
+class CreatePendaftaran(View):
+    def get(self, request):
+        form = FormPeserta
+        template_name = 'peserta/pendaftaran_form.html'
+
+        return render(request, template_name, {"form": form, "label": "Pendaftaran Baru"})
 
 
+    def post(self, request):
+        form = FormPeserta(request.POST or None)
+        template_name = 'peserta/pendaftaran_form.html'
 
-def deleteData(request, id):
-    obj = Peserta.objects.filter(id=id)
-    if obj.exists() and obj.count() == 1:
-        obj = obj.get()
-        obj.delete()
+        if form.is_valid():
+            peserta = form.save(commit=False)
+            user = User()
+            user.username = useracak()
+            user.is_staff = True
+            user.set_password(user.username)
+            user.save()
 
-        # messages.success(request, 'Delete suskes')
-        return redirect(request, '/')
-
-    # messages.success(request, 'Delete Gagal')
-    # return HttpResponseRedirect(request, '/')
-
-
-def listData(request):
-    peserta = Peserta.objects.all().order_by('nama')
-    return render(request, "peserta/list_data.html",{
-        "peserta": peserta,
-    })
-
-
-def formInput(request):
-    if request.POST:
-        #===== demo membuat form dari model
-        # form = FormPeserta(request.POST or None)
-        # if form.is_valid():
-        #     form.save()
-        #     return redirect('/kontrol')
-
-        #===== demo membuat form tanpa model
-        form_biasa = FormBiasa(request.POST or None)        
-        if form_biasa.is_valid():
-            peserta = Peserta()
-            peserta.nama = form_biasa.cleaned_data['nama']
-            peserta.program = form_biasa.cleaned_data['program']
-            peserta.alamat = form_biasa.cleaned_data['alamat']
+            peserta.user = user
             peserta.save()
 
-            return redirect('/kontrol')
+            pendaftaran = Pendaftaran()
+            pendaftaran.peserta = peserta
+            pendaftaran.program = Program.objects.get(pk=request.POST['program'])
+            pendaftaran.save()
             
-        return render(request, "peserta/form_input.html", {
-            "form": form_biasa,
-        })
+            return redirect('/')
 
-    form = FormBiasa()
-    data = {
-        "form": form,
-    }
-    return render(request, "peserta/form_input.html", data)
+        return render(request, template_name, {"form": form, "label": "Pendaftaran Baru"})
+
+# class EditProgram(FormMixinPeserta, generic.UpdateView):
+    
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['label'] = "Edit Program"
+
+#         return context
+
+
+# class DeleteProgram(View):
+#     def get(self, req, *args, **kwargs):
+#         obj = get_object_or_404(Program, id=kwargs['id'])
+#         obj.delete()
+
+#         return redirect('list-program')

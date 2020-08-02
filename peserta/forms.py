@@ -1,17 +1,32 @@
 from django import forms
-from peserta.models import Peserta, Program
+from peserta.models import Peserta, Program, Trainer
 
 
-class FormBiasa(forms.Form):
-    nama = forms.CharField(required=True)
-    program = forms.CharField(required=False)
-    alamat = forms.CharField(required=False, widget=forms.Textarea())
+class FormTrainer(forms.ModelForm):
+    class Meta:
+        model = Trainer
+        exclude = ('user',)
 
+
+# class FormPendaftaran(forms.ModelForm):
 
 class FormPeserta(forms.ModelForm):
+    program_query = Program.objects.all().order_by('nama_program')
+    program = forms.ModelChoiceField(queryset=program_query)
+
     class Meta:
         model = Peserta
-        fields = '__all__'
+        exclude = ('user',)
+        widgets = {
+            'tgl_lahir': forms.DateInput(attrs={'class':'form-control', 'type':'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(FormPeserta, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            visible.field.widget\
+                .attrs['class'] = 'form-control input-sm'
 
 
 class ProgramForm(forms.ModelForm):

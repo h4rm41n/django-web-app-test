@@ -20,12 +20,13 @@ from peserta import views
 urlpatterns = [
     path('', views.Dashboard.as_view()),
     path('kontrol/', admin.site.urls),
-    path('input/', views.formInput),
-    path('delete/<int:id>', views.deleteData),
+    # path('input/', views.formInput),
+    # path('delete/<int:id>', views.deleteData),
 
     path('programlist', views.ListProgram.as_view(), name='list-program'),
     path('programnew', views.CreateProgram.as_view(), name='new-program'),
     path('programedit/<int:pk>', views.EditProgram.as_view(), name='edit-program'),
-    # path('programdelete', views.DeleteProgram.as_view(), name='delete-program')
-    path('programdelete/<int:id>', views.DeleteProgram.as_view(), name='delete-program')
+    path('programdelete/<int:id>', views.DeleteProgram.as_view(), name='delete-program'),
+
+    path('pendaftaran', views.CreatePendaftaran.as_view(), name='new-pendaftaran'),
 ]
