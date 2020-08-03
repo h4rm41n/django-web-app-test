@@ -1,13 +1,17 @@
 from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
-from .forms import FormPeserta, ProgramForm
-from .models import Peserta, Program, Pendaftaran
+from .forms import FormPeserta, ProgramForm, KelasForm, TrainerForm
+from .models import Peserta, Program, Pendaftaran, Kelas, Trainer
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.views import generic, View
 from django.contrib.auth.models import User
 from core.lib import useracak
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 
+
+@method_decorator(login_required, name='dispatch')
 class Dashboard(generic.TemplateView):
     template_name = 'layout/dashboard.html'
 
@@ -86,18 +90,30 @@ class CreatePendaftaran(View):
 
         return render(request, template_name, {"form": form, "label": "Pendaftaran Baru"})
 
-# class EditProgram(FormMixinPeserta, generic.UpdateView):
-    
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['label'] = "Edit Program"
-
-#         return context
 
 
-# class DeleteProgram(View):
-#     def get(self, req, *args, **kwargs):
-#         obj = get_object_or_404(Program, id=kwargs['id'])
-#         obj.delete()
+@method_decorator(login_required, name='dispatch')
+class PesertaList(generic.ListView):
+    model = Peserta
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-id')
 
-#         return redirect('list-program')
+
+class KelasList(generic.ListView):
+    model = Kelas
+
+
+class CreateKelas(generic.CreateView):
+    form_class = KelasForm
+    model = Kelas
+    success_url = reverse_lazy('list-kelas')
+
+
+class TrainerList(generic.ListView):
+    model = Trainer
+
+
+class CreateTrainer(generic.CreateView):
+    form_class = TrainerForm
+    model = Trainer
+    success_url = reverse_lazy('list-trainer')

@@ -1,0 +1,32 @@
+{% extends "layout/index.html" %}
+
+{% block container %}
+    <h3>Data Kelas</h3>
+    <a style="float: right;" href="{% url 'new-kelas' %}" class="btn btn-success btn-sm">Tambah Data</a><br /><br />
+    <table class="table table-hover table-striped table-bordered">
+        <tr>
+            <th width="5%">No.</th>
+            <th width="">Nama Kelas</th>
+            <th width="">Peserta</th>
+            <th width="">Program</th>
+            <th width="">Trainer</th>
+        </tr>
+        {% for data in object_list %}
+            <tr>
+                <td>{{forloop.counter}}.</td>
+                <td>{{data.nama_kelas}}</td>
+                <td>{{data.peserta}}</td>
+                <td>
+                    {% for dt in data.trainer.all %}
+                        {{ dt.nama_trainer }}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for trainer in data.trainer.all %}
+                        {{ trainer.nama_trainer}} |
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock container %}

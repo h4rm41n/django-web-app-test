@@ -1,0 +1,14 @@
+{% extends "layout/index.html" %}
+
+{% block container %}
+    <h4>{{label}}</h4>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <table class="table table-bordered">
+            {{ form.as_table }}
+            <tr>
+                <td><input type="submit" class="btn btn-primary"></td>
+            </tr>
+        </table>
+    </form>
+{% endblock container %}

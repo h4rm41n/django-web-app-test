@@ -10,19 +10,27 @@ KOTA = (
     ('tanjung', 'Tanjung'),
 )
 
+AGAMA = (
+    ('islam', 'Islam'),
+    ('Kristen', 'Kristen'),
+    ('hindu', 'Hindu'),
+    ('budha', 'Budha'),
+    ('konghucu', 'Konghucu'),
+)
+
 KELAMIN = (
     ('L', 'Laki'),
     ('P', 'Perempuan'),
 )
 
 class Peserta(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True, related_name='peserta_user')
     nama_peserta = models.CharField(max_length=255, blank=False, null=False)
     kelamin = models.CharField(max_length=2, choices=KELAMIN, blank=False, null=False)
     tempat_lahir = models.CharField(max_length=30, blank=False, null=False)
     tgl_lahir = models.DateField(blank=False, null=False)
     nomor_handphone = models.CharField(max_length=15, blank=True, null=True)
-    agama = models.CharField(max_length=255, blank=False, null=False)
+    agama = models.CharField(max_length=255, choices=AGAMA, blank=False, null=False)
     email = models.EmailField(max_length=255, blank=False, null=False)
     sosmed = models.CharField(max_length=255, blank=False, null=False)
     pendidikan_akhir = models.CharField(max_length=255, blank=True, null=True)
@@ -47,16 +55,16 @@ class Program(models.Model):
 
 
 class Trainer(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     nama_trainer = models.CharField(max_length=255, blank=True, null=True)
     kelamin = models.CharField(max_length=2, choices=KELAMIN, blank=True, null=True)
     tempat_lahir = models.CharField(max_length=30, blank=True, null=True)
     tgl_lahir = models.DateField(blank=True, null=True)
     nomor_handphone = models.CharField(max_length=15, blank=True, null=True)
-    agama = models.CharField(max_length=255, blank=True, null=True)
+    agama = models.CharField(max_length=255, choices=AGAMA, blank=False, null=False)
     email = models.EmailField(max_length=255, blank=True, null=True)
     sosmed = models.CharField(max_length=255, blank=True, null=True)
-    pendidikan_akhir = models.EmailField(max_length=255, blank=True, null=True)
+    pendidikan_akhir = models.CharField(max_length=255, blank=True, null=True)
     kota = models.CharField(max_length=255, choices=KOTA, blank=True, null=True)
     alamat = models.TextField(max_length=255, blank=True, null=True)
 
@@ -71,6 +79,7 @@ class Trainer(models.Model):
 class Pendaftaran(models.Model):
     peserta = models.ForeignKey(Peserta, on_delete=models.SET_NULL, blank=True, null=True)
     program = models.ForeignKey(Program, on_delete=models.SET_NULL, blank=True, null=True)
+    is_register= models.BooleanField(default=True)
     keterangan = models.TextField(max_length=255, blank=True, null=True)
 
 
@@ -78,7 +87,7 @@ class Kelas(models.Model):
     nama_kelas = models.CharField(max_length=255, blank=True, null=True)
     peserta = models.ForeignKey(Peserta, on_delete=models.SET_NULL, blank=True, null=True)
     program = models.ForeignKey(Program, on_delete=models.SET_NULL, blank=True, null=True)
-    trainer = models.ForeignKey(Trainer, on_delete=models.SET_NULL, blank=True, null=True)
+    trainer = models.ManyToManyField(Trainer)
     keterangan = models.TextField(max_length=255, blank=True, null=True)
 
     def __str__(self):

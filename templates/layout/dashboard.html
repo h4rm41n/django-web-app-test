@@ -2,6 +2,14 @@
 
 {% block container %}
     
-    <h2>{{ hi }}</h2>
-
+    <h6> Halo Selamat Datang
+    {% if request.user.is_superuser %}
+        {{ request.user }}
+    {% elif request.user.peserta_user %}
+        {{ request.user.peserta_user }}
+    {% else %}
+        Trainer
+    {% endif %}
+    </h6>
+    
 {% endblock container %}

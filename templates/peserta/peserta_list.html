@@ -1,0 +1,28 @@
+{% extends "layout/index.html" %}
+
+{% block container %}
+    <h3>Data Peserta</h3>
+    <a style="float: right;" href="{% url 'new-program' %}" class="btn btn-success btn-sm">Tambah Data</a><br /><br />
+    <table class="table table-hover table-striped table-bordered">
+        <tr>
+            <th width="">No.</th>
+            <th width="">Nama</th>
+            <th width="">Username</th>
+            <th width="">Kelamin</th>
+            <th width="">Tempat/Tanggal Lahir</th>
+            <th width="">Nomor HP</th>
+            <th width="">Alamat</th>
+        </tr>
+        {% for data in object_list %}
+            <tr>
+                <td>{{forloop.counter}}.</td>
+                <td>{{data.nama_peserta}}</td>
+                <td>{{data.user.username}}</td>
+                <td>{{data.kelamin}}</td>
+                <td>{{data.tempat_lahir}}, {{data.tgl_lahir}}</td>
+                <td>{{data.nomor_handphone}}</td>
+                <td>{{data.alamat}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock container %}
