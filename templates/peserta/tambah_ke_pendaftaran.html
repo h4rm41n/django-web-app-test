@@ -1,10 +1,11 @@
 {% extends "layout/index.html" %}
 
 {% block container %}
-    <h4>{{label}}</h4>
+    <h4>Menambah Peserta Lama [{{peserta.nama_peserta}}]</h4>
     <form method="POST" action="">
         {% csrf_token %}
         <table class="table table-bordered">
+            <!-- <input type="hidden" name="id" value="{{peserta.id}}"> -->
             {{ form.as_table }}
             <tr>
                 <td><input type="submit" class="btn btn-primary"></td>
@@ -16,10 +17,7 @@
 {% block js %}
 <script>
     $(function(){
-        $("#id_pendaftaran").select2()
-    })
-    $(function(){
-        $("#id_trainer").select2()
+        $("#id_program").select2()
     })
 </script>
 {% endblock js %}

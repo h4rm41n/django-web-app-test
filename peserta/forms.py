@@ -1,5 +1,5 @@
 from django import forms
-from peserta.models import Peserta, Program, Trainer, Kelas
+from peserta.models import Peserta, Program, Trainer, Kelas, Pendaftaran
 
 
 class TrainerForm(forms.ModelForm):
@@ -16,7 +16,7 @@ class TrainerForm(forms.ModelForm):
         for visible in self.visible_fields():
             visible.field.widget\
                 .attrs['class'] = 'form-control input-sm'
-# class FormPendaftaran(forms.ModelForm):
+
 
 class FormPeserta(forms.ModelForm):
     program_query = Program.objects.all().order_by('nama_program')
@@ -57,17 +57,33 @@ class ProgramForm(forms.ModelForm):
 class KelasForm(forms.ModelForm):
     class Meta:
         model = Kelas
-        exclude = ('peserta',)
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super(KelasForm, self).__init__(*args, **kwargs)
+
         self.fields['trainer']\
             .queryset = Trainer.objects.all()
+
+        self.fields['pendaftaran']\
+            .queryset = Pendaftaran.objects.filter(is_register=True)
         
         for visible in self.visible_fields():
             if visible.name == "trainer":
                 visible.field.widget\
                 .attrs['multiple'] = 'multiple'
+
+            visible.field.widget\
+                .attrs['class'] = 'form-control input-sm'
+
+
+class TambahPendaftaranForm(forms.Form):
+    program_query = Program.objects.all().order_by('nama_program')
+    program = forms.ModelChoiceField(queryset=program_query)
+
+    def __init__(self, *args, **kwargs):
+        super(TambahPendaftaranForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
 
             visible.field.widget\
                 .attrs['class'] = 'form-control input-sm'

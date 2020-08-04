@@ -12,6 +12,9 @@
             <th width="">Tempat/Tanggal Lahir</th>
             <th width="">Nomor HP</th>
             <th width="">Alamat</th>
+            <th width="">
+                Proses
+            </th>
         </tr>
         {% for data in object_list %}
             <tr>
@@ -22,6 +25,9 @@
                 <td>{{data.tempat_lahir}}, {{data.tgl_lahir}}</td>
                 <td>{{data.nomor_handphone}}</td>
                 <td>{{data.alamat}}</td>
+                <td>
+                    <a href="/tambahpendaftar/{{data.id}}" class="btn btn-primary btn-sm">Tambah Ke Pendaftar</a>
+                </td>
             </tr>
         {% endfor %}
     </table>

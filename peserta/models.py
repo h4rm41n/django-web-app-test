@@ -79,15 +79,21 @@ class Trainer(models.Model):
 class Pendaftaran(models.Model):
     peserta = models.ForeignKey(Peserta, on_delete=models.SET_NULL, blank=True, null=True)
     program = models.ForeignKey(Program, on_delete=models.SET_NULL, blank=True, null=True)
-    is_register= models.BooleanField(default=True)
+    is_register= models.BooleanField(default=True) # true = belum punya kelas, false = sudah punya kelas
     keterangan = models.TextField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.peserta.nama_peserta
+    
 
 
 class Kelas(models.Model):
     nama_kelas = models.CharField(max_length=255, blank=True, null=True)
-    peserta = models.ForeignKey(Peserta, on_delete=models.SET_NULL, blank=True, null=True)
+    pendaftaran = models.ManyToManyField(Pendaftaran)
+    # peserta = models.ForeignKey(Peserta, on_delete=models.SET_NULL, blank=True, null=True)
     program = models.ForeignKey(Program, on_delete=models.SET_NULL, blank=True, null=True)
     trainer = models.ManyToManyField(Trainer)
+    # is_active = models.BooleanField(default=True)
     keterangan = models.TextField(max_length=255, blank=True, null=True)
 
     def __str__(self):

@@ -15,15 +15,15 @@
             <tr>
                 <td>{{forloop.counter}}.</td>
                 <td>{{data.nama_kelas}}</td>
-                <td>{{data.peserta}}</td>
                 <td>
-                    {% for dt in data.trainer.all %}
-                        {{ dt.nama_trainer }}
+                    {% for peserta in data.pendaftaran.all %}
+                        {{ peserta.peserta }} |
                     {% endfor %}
                 </td>
+                <td>{{ data.program.nama_program }}</td>
                 <td>
                     {% for trainer in data.trainer.all %}
-                        {{ trainer.nama_trainer}} |
+                        {{ trainer.nama_trainer }} |
                     {% endfor %}
                 </td>
             </tr>
